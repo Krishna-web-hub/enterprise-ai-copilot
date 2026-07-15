@@ -1,0 +1,62 @@
+services:
+  - type: web
+    name: ai-copilot-backend
+    runtime: python
+    region: oregon
+    rootDir: backend
+    buildCommand: pip install -r requirements-render.txt && python -m alembic upgrade head
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: ai-copilot-db
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: ai-copilot-db
+          property: port
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: ai-copilot-db
+          property: database
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: ai-copilot-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: ai-copilot-db
+          property: password
+      - key: REDIS_HOST
+        value: "localhost"
+      - key: REDIS_PORT
+        value: "6379"
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: "HS256"
+      - key: JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: JWT_REFRESH_TOKEN_EXPIRE_DAYS
+        value: "7"
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_BASE_URL
+        value: "https://router.huggingface.co/v1"
+      - key: LLM_MODEL
+        value: "Qwen/Qwen2.5-7B-Instruct"
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: UPLOAD_DIR
+        value: "./data/uploads"
+      - key: MODELS_DIR
+        value: "./data/models"
+      - key: MAX_UPLOAD_SIZE_MB
+        value: "100"
+
+databases:
+  - name: ai-copilot-db
+    plan: free
+    region: oregon

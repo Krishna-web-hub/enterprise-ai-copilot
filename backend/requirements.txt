@@ -1,0 +1,90 @@
+# ============================================================
+# Enterprise AI Analytics Copilot - Python Dependencies
+# ============================================================
+# Versions are pinned for reproducible builds.
+# Run: pip install -r requirements.txt
+
+# ─── Web Framework ─────────────────────────────────────────
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+
+# ─── Database ──────────────────────────────────────────────
+sqlalchemy==2.0.36
+asyncpg==0.30.0
+alembic==1.14.1
+greenlet==3.1.1
+
+# ─── Authentication & Security ─────────────────────────────
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+
+# ─── Validation & Settings ─────────────────────────────────
+pydantic==2.10.4
+pydantic-settings==2.7.1
+email-validator==2.2.0
+
+# ─── HTTP Client ───────────────────────────────────────────
+httpx==0.28.1
+
+# ─── Redis ─────────────────────────────────────────────────
+redis==5.2.1
+
+# ─── Task Queue ────────────────────────────────────────────
+celery[redis]==5.4.0
+
+# ─── Cloud Storage ─────────────────────────────────────────
+boto3==1.35.0
+
+# ─── Observability ─────────────────────────────────────────
+prometheus-client==0.21.0
+
+# ─── AI & LLM ─────────────────────────────────────────────
+openai==1.58.1
+langchain==0.3.14
+langchain-openai==0.3.0
+langchain-community==0.3.14
+langgraph==0.2.60
+
+# ─── RAG & Vector DB ──────────────────────────────────────
+qdrant-client==1.12.1
+# faiss-cpu==1.9.0  # Uncomment for local FAISS development
+
+# ─── SQL Engine (NL2SQL execution) ────────────────────────
+duckdb==1.1.3
+
+# ─── Machine Learning ─────────────────────────────────────
+scikit-learn==1.6.0
+xgboost==2.1.3
+lightgbm==4.5.0
+shap==0.46.0
+joblib==1.4.2
+
+# ─── Deep Learning ────────────────────────────────────────
+# CPU-only builds (install from https://download.pytorch.org/whl/cpu)
+torch==2.5.1
+torchvision==0.20.1
+
+# ─── OCR ──────────────────────────────────────────────────
+pytesseract==0.3.13
+Pillow==11.1.0
+
+# ─── Data Processing ──────────────────────────────────────
+pandas==2.2.3
+numpy==2.2.1
+openpyxl==3.1.5
+
+# ─── Document Processing ──────────────────────────────────
+pypdf==5.1.0
+python-docx==1.1.2
+
+# ─── Visualization ────────────────────────────────────────
+plotly==5.24.1
+
+# ─── Testing ──────────────────────────────────────────────
+pytest==8.3.4
+pytest-asyncio==0.25.0
+
+# ─── Code Quality ─────────────────────────────────────────
+ruff==0.8.6

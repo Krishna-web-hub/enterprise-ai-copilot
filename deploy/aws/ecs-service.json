@@ -1,0 +1,32 @@
+{
+  "serviceName": "copilot-backend",
+  "cluster": "copilot-cluster",
+  "taskDefinition": "copilot-backend",
+  "desiredCount": 2,
+  "launchType": "FARGATE",
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "subnets": ["subnet-XXXXX", "subnet-YYYYY"],
+      "securityGroups": ["sg-XXXXX"],
+      "assignPublicIp": "DISABLED"
+    }
+  },
+  "loadBalancers": [
+    {
+      "targetGroupArn": "arn:aws:elasticloadbalancing:REGION:ACCOUNT_ID:targetgroup/copilot-backend/XXXXX",
+      "containerName": "copilot-backend",
+      "containerPort": 8000
+    }
+  ],
+  "healthCheckGracePeriodSeconds": 60,
+  "deploymentConfiguration": {
+    "maximumPercent": 200,
+    "minimumHealthyPercent": 100,
+    "deploymentCircuitBreaker": {
+      "enable": true,
+      "rollback": true
+    }
+  },
+  "serviceRegistries": [],
+  "enableExecuteCommand": true
+}

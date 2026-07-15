@@ -1,0 +1,25 @@
+{
+  "_comment": "ECS Auto Scaling configuration — register target + put scaling policy",
+  "register_target": {
+    "ServiceNamespace": "ecs",
+    "ResourceId": "service/copilot-cluster/copilot-backend",
+    "ScalableDimension": "ecs:service:DesiredCount",
+    "MinCapacity": 2,
+    "MaxCapacity": 10
+  },
+  "scaling_policy": {
+    "PolicyName": "copilot-cpu-scaling",
+    "ServiceNamespace": "ecs",
+    "ResourceId": "service/copilot-cluster/copilot-backend",
+    "ScalableDimension": "ecs:service:DesiredCount",
+    "PolicyType": "TargetTrackingScaling",
+    "TargetTrackingScalingPolicyConfiguration": {
+      "TargetValue": 70.0,
+      "PredefinedMetricSpecification": {
+        "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
+      },
+      "ScaleInCooldown": 300,
+      "ScaleOutCooldown": 60
+    }
+  }
+}

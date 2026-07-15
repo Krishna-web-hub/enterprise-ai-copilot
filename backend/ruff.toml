@@ -1,0 +1,43 @@
+# ============================================================
+# Ruff Configuration - Python Linter & Formatter
+# ============================================================
+# Ruff is an extremely fast Python linter (written in Rust).
+# It replaces flake8, isort, pyupgrade, and many other tools.
+
+# Target Python version
+target-version = "py312"
+
+# Directories to exclude
+exclude = [
+    ".venv",
+    "__pycache__",
+    "migrations/versions",
+]
+
+[lint]
+# Rules to enable (beyond defaults)
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort (import sorting)
+    "UP",     # pyupgrade (modern Python syntax)
+    "B",      # flake8-bugbear (common bugs)
+]
+
+# Rules to ignore (pragmatic choices for this project)
+ignore = [
+    "E501",   # line too long (handled by formatter, not linter)
+    "B008",   # function call in default argument (FastAPI Depends() pattern)
+    "B904",   # raise-without-from (we already pass context in our custom exceptions)
+    "UP007",  # Use X | Y instead of Union (keep Optional for clarity)
+]
+
+[lint.per-file-ignores]
+# Test files: allow assertions, unused imports (fixtures), etc.
+"tests/**" = ["F401", "B011"]
+# Migration files: auto-generated, don't lint
+"migrations/**" = ["E", "W", "F", "I", "UP", "B"]
+
+[lint.isort]
+known-first-party = ["app"]

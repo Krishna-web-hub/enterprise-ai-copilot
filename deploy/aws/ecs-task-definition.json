@@ -1,0 +1,53 @@
+{
+  "family": "copilot-backend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/copilot-task-role",
+  "containerDefinitions": [
+    {
+      "name": "copilot-backend",
+      "image": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/copilot-backend:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {"name": "APP_ENV", "value": "production"},
+        {"name": "DEBUG", "value": "false"},
+        {"name": "BACKEND_WORKERS", "value": "4"},
+        {"name": "STORAGE_BACKEND", "value": "s3"}
+      ],
+      "secrets": [
+        {"name": "POSTGRES_HOST", "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:copilot/db:host::"},
+        {"name": "POSTGRES_PASSWORD", "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:copilot/db:password::"},
+        {"name": "POSTGRES_USER", "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:copilot/db:username::"},
+        {"name": "POSTGRES_DB", "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:copilot/db:dbname::"},
+        {"name": "JWT_SECRET_KEY", "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:copilot/jwt:key::"},
+        {"name": "OPENAI_API_KEY", "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:copilot/openai:key::"},
+        {"name": "REDIS_HOST", "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:copilot/redis:host::"},
+        {"name": "S3_BUCKET_NAME", "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:copilot/s3:bucket::"}
+      ],
+      "healthCheck": {
+        "command": ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 30
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/copilot-backend",
+          "awslogs-region": "REGION",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

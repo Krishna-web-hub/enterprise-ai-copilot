@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Frontend build
+frontend/dist/
+frontend/build/
+
+# Docker
+docker-compose.override.yml
+
+# ML Models & Data
+backend/data/uploads/*
+backend/data/models/*
+!backend/data/uploads/.gitkeep
+!backend/data/models/.gitkeep
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite3
+
+# Test
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Redis
+dump.rdb
+
+# Qdrant
+qdrant_storage/

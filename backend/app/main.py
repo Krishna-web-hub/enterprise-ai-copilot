@@ -10,6 +10,7 @@ This is the FastAPI application factory. It:
 """
 
 import logging
+from pathlib import Path
 import sys
 import time
 from contextlib import asynccontextmanager

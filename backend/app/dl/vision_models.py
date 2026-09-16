@@ -17,22 +17,16 @@ Why singletons instead of per-request loading?
   loading multiple 100MB+ copies into a 7GB-RAM system.
 """
 
-from typing import Optional
+from typing import Any, Optional
 
-import torch
 from PIL import Image
-from torchvision import models, transforms
-from torchvision.models.detection import (
-    FasterRCNN_ResNet50_FPN_Weights,
-    fasterrcnn_resnet50_fpn,
-)
 
 # ─── ImageNet Class Labels ─────────────────────────────────────
 # torchvision provides these via model weights metadata
 
 # ─── Classification Model (ResNet18) ──────────────────────────
 
-_classifier: Optional[torch.nn.Module] = None
+_classifier: Optional[Any] = None
 _classifier_transforms = None
 _classifier_labels: Optional[list[str]] = None
 
@@ -40,6 +34,7 @@ _classifier_labels: Optional[list[str]] = None
 def _load_classifier():
     """Load ResNet18 pretrained on ImageNet (lazy, once)."""
     global _classifier, _classifier_transforms, _classifier_labels
+    from torchvision import models
 
     weights = models.ResNet18_Weights.IMAGENET1K_V1
     _classifier = models.resnet18(weights=weights)
@@ -62,6 +57,8 @@ def classify_image(image: Image.Image, top_k: int = 5) -> list[dict]:
         Confidence values are softmax probabilities summing to ~1.0.
     """
     global _classifier, _classifier_transforms, _classifier_labels
+    import torch
+
     if _classifier is None:
         _load_classifier()
 
@@ -85,7 +82,7 @@ def classify_image(image: Image.Image, top_k: int = 5) -> list[dict]:
 
 # ─── Object Detection Model (Faster R-CNN) ────────────────────
 
-_detector: Optional[torch.nn.Module] = None
+_detector: Optional[Any] = None
 _detector_labels: Optional[list[str]] = None
 
 # COCO dataset class names (91 categories, index 0 is background)
@@ -110,6 +107,10 @@ COCO_LABELS = [
 def _load_detector():
     """Load Faster R-CNN pretrained on COCO (lazy, once)."""
     global _detector, _detector_labels
+    from torchvision.models.detection import (
+        FasterRCNN_ResNet50_FPN_Weights,
+        fasterrcnn_resnet50_fpn,
+    )
 
     weights = FasterRCNN_ResNet50_FPN_Weights.COCO_V1
     _detector = fasterrcnn_resnet50_fpn(weights=weights)
@@ -133,6 +134,9 @@ def detect_objects(
         Bbox coordinates are in pixels relative to the original image size.
     """
     global _detector, _detector_labels
+    import torch
+    from torchvision import transforms
+
     if _detector is None:
         _load_detector()
 

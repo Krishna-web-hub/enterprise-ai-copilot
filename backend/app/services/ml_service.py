@@ -44,7 +44,6 @@ from typing import Any, Optional
 import joblib
 import numpy as np
 import pandas as pd
-import shap
 from sklearn.metrics import (
     accuracy_score,
     f1_score,
@@ -526,6 +525,7 @@ class MLService:
 
             feature_names = get_output_feature_names(preprocessor)
 
+            import shap
             explainer = shap.Explainer(estimator, X_transformed)
             try:
                 # check_additivity=False: tree ensembles (esp. RandomForest) can

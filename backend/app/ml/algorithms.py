@@ -26,16 +26,6 @@ Scoring metric per task type:
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from lightgbm import LGBMClassifier, LGBMRegressor
-from sklearn.cluster import KMeans
-from sklearn.ensemble import (
-    IsolationForest,
-    RandomForestClassifier,
-    RandomForestRegressor,
-)
-from sklearn.linear_model import LinearRegression, LogisticRegression
-from xgboost import XGBClassifier, XGBRegressor
-
 
 @dataclass
 class AlgorithmSpec:
@@ -45,40 +35,88 @@ class AlgorithmSpec:
     factory: Callable  # zero-arg callable returning a fresh, unfitted estimator
 
 
-# ─── Classification candidates ─────────────────────────────────
+# ─── Classification candidates (lazy-loaded estimators) ────────
 CLASSIFICATION_ALGORITHMS: list[AlgorithmSpec] = [
-    AlgorithmSpec("logistic_regression", "Logistic Regression",
-                  lambda: LogisticRegression(max_iter=1000, random_state=42)),
-    AlgorithmSpec("random_forest", "Random Forest",
-                  lambda: RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)),
-    AlgorithmSpec("xgboost", "XGBoost",
-                  lambda: XGBClassifier(random_state=42, eval_metric="logloss", verbosity=0)),
-    AlgorithmSpec("lightgbm", "LightGBM",
-                  lambda: LGBMClassifier(random_state=42, verbosity=-1)),
+    AlgorithmSpec(
+        "logistic_regression",
+        "Logistic Regression",
+        lambda: __import__("sklearn.linear_model", fromlist=["LogisticRegression"]).LogisticRegression(
+            max_iter=1000, random_state=42
+        ),
+    ),
+    AlgorithmSpec(
+        "random_forest",
+        "Random Forest",
+        lambda: __import__("sklearn.ensemble", fromlist=["RandomForestClassifier"]).RandomForestClassifier(
+            n_estimators=100, random_state=42, n_jobs=-1
+        ),
+    ),
+    AlgorithmSpec(
+        "xgboost",
+        "XGBoost",
+        lambda: __import__("xgboost").XGBClassifier(
+            random_state=42, eval_metric="logloss", verbosity=0
+        ),
+    ),
+    AlgorithmSpec(
+        "lightgbm",
+        "LightGBM",
+        lambda: __import__("lightgbm").LGBMClassifier(
+            random_state=42, verbosity=-1
+        ),
+    ),
 ]
 
-# ─── Regression candidates ─────────────────────────────────────
+# ─── Regression candidates (lazy-loaded estimators) ────────────
 REGRESSION_ALGORITHMS: list[AlgorithmSpec] = [
-    AlgorithmSpec("linear_regression", "Linear Regression",
-                  lambda: LinearRegression()),
-    AlgorithmSpec("random_forest", "Random Forest",
-                  lambda: RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)),
-    AlgorithmSpec("xgboost", "XGBoost",
-                  lambda: XGBRegressor(random_state=42, verbosity=0)),
-    AlgorithmSpec("lightgbm", "LightGBM",
-                  lambda: LGBMRegressor(random_state=42, verbosity=-1)),
+    AlgorithmSpec(
+        "linear_regression",
+        "Linear Regression",
+        lambda: __import__("sklearn.linear_model", fromlist=["LinearRegression"]).LinearRegression(),
+    ),
+    AlgorithmSpec(
+        "random_forest",
+        "Random Forest",
+        lambda: __import__("sklearn.ensemble", fromlist=["RandomForestRegressor"]).RandomForestRegressor(
+            n_estimators=100, random_state=42, n_jobs=-1
+        ),
+    ),
+    AlgorithmSpec(
+        "xgboost",
+        "XGBoost",
+        lambda: __import__("xgboost").XGBRegressor(
+            random_state=42, verbosity=0
+        ),
+    ),
+    AlgorithmSpec(
+        "lightgbm",
+        "LightGBM",
+        lambda: __import__("lightgbm").LGBMRegressor(
+            random_state=42, verbosity=-1
+        ),
+    ),
 ]
 
 # ─── Clustering (unsupervised — one fixed algorithm) ──────────
 CLUSTERING_ALGORITHMS: list[AlgorithmSpec] = [
-    AlgorithmSpec("kmeans", "K-Means",
-                  lambda: KMeans(n_clusters=3, random_state=42, n_init=10)),
+    AlgorithmSpec(
+        "kmeans",
+        "K-Means",
+        lambda: __import__("sklearn.cluster", fromlist=["KMeans"]).KMeans(
+            n_clusters=3, random_state=42, n_init=10
+        ),
+    ),
 ]
 
 # ─── Anomaly detection (unsupervised — one fixed algorithm) ───
 ANOMALY_DETECTION_ALGORITHMS: list[AlgorithmSpec] = [
-    AlgorithmSpec("isolation_forest", "Isolation Forest",
-                  lambda: IsolationForest(contamination=0.1, random_state=42, n_jobs=-1)),
+    AlgorithmSpec(
+        "isolation_forest",
+        "Isolation Forest",
+        lambda: __import__("sklearn.ensemble", fromlist=["IsolationForest"]).IsolationForest(
+            contamination=0.1, random_state=42, n_jobs=-1
+        ),
+    ),
 ]
 
 _REGISTRY: dict[str, list[AlgorithmSpec]] = {

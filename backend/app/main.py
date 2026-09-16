@@ -146,6 +146,20 @@ def create_app() -> FastAPI:
             )
         return response
 
+    # ─── Root Landing Endpoint ──────────────────────────────
+    @app.get("/", tags=["System"])
+    async def root():
+        """Root landing endpoint providing API status and navigation links."""
+        return {
+            "service": settings.APP_NAME,
+            "version": "1.0.0",
+            "environment": settings.APP_ENV,
+            "status": "online",
+            "docs": "/docs",
+            "health": "/health",
+            "api": "/api/v1",
+        }
+
     # ─── Health Check (no auth required) ─────────────────────
     @app.get("/health", tags=["System"])
     async def health_check():

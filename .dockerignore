@@ -1,0 +1,52 @@
+# Git & Version Control
+.git/
+.gitignore
+.github/
+
+# Python Virtual Environments & Cache
+.venv/
+backend/.venv/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Frontend Source, Build & Node Modules
+frontend/
+node_modules/
+
+# Local Persistent Volumes & Scratch Data
+data/
+backend/data/uploads/*
+backend/data/models/*
+!backend/data/uploads/.gitkeep
+!backend/data/models/.gitkeep
+
+# Environment & Secrets Files
+.env
+.env*
+!.env.example
+!.env.production.template
+
+# IDE & Editor Configs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation & CI/CD Templates
+*.md
+Makefile
+deploy/
+k8s/
+monitoring/
+docker-compose*.yml
+render.yaml
+railway.toml
+start*.sh

@@ -65,14 +65,31 @@ async def lifespan(app: FastAPI):
     """
     Manages application startup and shutdown events.
 
-    On startup: Create database tables (in dev), log readiness.
-    On shutdown: Close database connections gracefully.
+    On startup:
+      - In development/debug mode: initializes database tables via create_all.
+      - In production: verifies DB connectivity safely without blocking or racing migrations.
+    On shutdown:
+      - Close database connections gracefully.
     """
     logger.info("Starting %s (env=%s)", settings.APP_NAME, settings.APP_ENV)
 
-    # Startup: create tables in dev mode
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # Startup database connectivity verification
+    try:
+        if settings.APP_ENV == "development" or settings.DEBUG:
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            logger.info("Database schema verified (development mode create_all)")
+        else:
+            from sqlalchemy import text
+            async with engine.connect() as conn:
+                await conn.execute(text("SELECT 1"))
+            logger.info("Database connection established")
+    except Exception as e:
+        logger.warning(
+            "Database connectivity check deferred or unavailable during startup: %s. "
+            "Application started in resilient mode (API requests will connect on demand).",
+            e,
+        )
 
     logger.info("Application ready")
     yield

@@ -15,8 +15,9 @@ backend/.venv/
 htmlcov/
 .ruff_cache/
 
-# Frontend Source, Build & Node Modules
-frontend/
+# Frontend Build & Node Modules (allow source to be built)
+frontend/node_modules/
+frontend/dist/
 node_modules/
 
 # Local Persistent Volumes & Scratch Data

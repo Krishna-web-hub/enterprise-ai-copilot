@@ -6,6 +6,15 @@
 # PyTorch, non-root user, and zero reliance on local persistent disks.
 # ============================================================
 
+# ─── Stage 0: Build Frontend React UI ───────────────────────
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ ./
+ENV VITE_API_URL=/api/v1
+RUN npm run build
+
 # ─── Stage 1: Build Dependencies ───────────────────────────
 FROM python:3.12-slim AS dependencies
 
@@ -44,6 +53,9 @@ WORKDIR /app
 
 # Copy application code from backend directory
 COPY backend/ .
+
+# Copy compiled React frontend Web UI
+COPY --from=frontend-builder /app/frontend/dist /app/static
 
 # Ensure data directories exist and have proper non-root permissions
 RUN mkdir -p /app/data/uploads /app/data/models && \

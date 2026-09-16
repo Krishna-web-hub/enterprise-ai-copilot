@@ -146,20 +146,6 @@ def create_app() -> FastAPI:
             )
         return response
 
-    # ─── Root Landing Endpoint ──────────────────────────────
-    @app.get("/", tags=["System"])
-    async def root():
-        """Root landing endpoint providing API status and navigation links."""
-        return {
-            "service": settings.APP_NAME,
-            "version": "1.0.0",
-            "environment": settings.APP_ENV,
-            "status": "online",
-            "docs": "/docs",
-            "health": "/health",
-            "api": "/api/v1",
-        }
-
     # ─── Health Check (no auth required) ─────────────────────
     @app.get("/health", tags=["System"])
     async def health_check():
@@ -183,6 +169,46 @@ def create_app() -> FastAPI:
 
     # Prometheus metrics endpoint (no auth, scraped by Prometheus)
     app.add_route("/metrics", metrics_endpoint, methods=["GET"])
+
+    # ─── Serve React Frontend Web UI (SPA) ────────────────────
+    from fastapi import HTTPException
+    from fastapi.responses import FileResponse
+    from fastapi.staticfiles import StaticFiles
+
+    static_dir = Path("/app/static")
+    if not static_dir.exists():
+        static_dir = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+
+    if static_dir.exists() and (static_dir / "index.html").exists():
+        assets_dir = static_dir / "assets"
+        if assets_dir.exists():
+            app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+
+        @app.get("/", tags=["UI"], include_in_schema=False)
+        async def serve_index():
+            return FileResponse(static_dir / "index.html")
+
+        @app.get("/{full_path:path}", tags=["UI"], include_in_schema=False)
+        async def serve_spa(full_path: str):
+            if full_path.startswith(("api", "docs", "redoc", "openapi.json", "health", "metrics")):
+                raise HTTPException(status_code=404, detail="Not Found")
+            file_path = static_dir / full_path
+            if file_path.exists() and file_path.is_file():
+                return FileResponse(file_path)
+            return FileResponse(static_dir / "index.html")
+    else:
+        @app.get("/", tags=["System"])
+        async def root():
+            """Root landing endpoint providing API status and navigation links."""
+            return {
+                "service": settings.APP_NAME,
+                "version": "1.0.0",
+                "environment": settings.APP_ENV,
+                "status": "online",
+                "docs": "/docs",
+                "health": "/health",
+                "api": "/api/v1",
+            }
 
     return app
 

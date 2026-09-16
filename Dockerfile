@@ -64,4 +64,5 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD python -c "import os, urllib.request; port = os.environ.get('PORT', '8080'); urllib.request.urlopen(f'http://localhost:{port}/health')" || exit 1
 
 # Start uvicorn with shell expansion for Cloud Run $PORT and exec for graceful SIGTERM signal handling
-CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080} --workers ${BACKEND_WORKERS:-2}"]
+# Default to 1 worker for Cloud Run container memory efficiency
+CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080} --workers ${BACKEND_WORKERS:-1}"]

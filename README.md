@@ -1,6 +1,24 @@
 # Enterprise AI Analytics Copilot
 
-An intelligent AI platform where users upload structured and unstructured data, ask business questions in natural language, and receive AI-generated insights, predictive analytics, dashboards, reports, and recommendations.
+[![Google Cloud Run](https://img.shields.io/badge/Google_Cloud_Run-Live_Deployment-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)](https://enterprise-ai-copilot-335067811983.asia-south1.run.app)
+[![React](https://img.shields.io/badge/React_18-Web_UI-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://enterprise-ai-copilot-335067811983.asia-south1.run.app)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Backend_API-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://enterprise-ai-copilot-335067811983.asia-south1.run.app/docs)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+
+An enterprise-grade, full-stack AI analytics copilot that enables organizations to upload structured and unstructured datasets, query insights in natural language, and generate interactive dashboards, predictive machine learning models, deep learning computer vision analytics, and automated executive reports.
+
+---
+
+## 🚀 Live Production Links
+
+| Service / Interface | Direct Link | Description |
+| :--- | :--- | :--- |
+| 🌐 **Interactive Web UI** | [enterprise-ai-copilot-335067811983.asia-south1.run.app](https://enterprise-ai-copilot-335067811983.asia-south1.run.app) | Single-page React application with dark/light mode, analytics dashboards, and copilot chat. |
+| 📖 **Swagger API Docs** | [/docs](https://enterprise-ai-copilot-335067811983.asia-south1.run.app/docs) | Interactive OpenAPI / Swagger UI to test all REST endpoints. |
+| 📋 **ReDoc Documentation** | [/redoc](https://enterprise-ai-copilot-335067811983.asia-south1.run.app/redoc) | Clean, structured API documentation specification. |
+| 🩺 **Production Health Check** | [/health](https://enterprise-ai-copilot-335067811983.asia-south1.run.app/health) | Orchestrator liveness & readiness check for Google Cloud Run. |
+
+---
 
 ## Architecture
 
@@ -133,7 +151,7 @@ enterprise-ai-copilot/
 - [ ] Phase 8: Agentic AI (LangGraph)
 - [ ] Phase 9: Power BI Integration
 - [ ] Phase 10: Generative AI Reports
-- [ ] Phase 11: Deployment & CI/CD
+- [x] Phase 11: Deployment & CI/CD (Google Cloud Run + Cloud Build)
 - [ ] Phase 12: Optimization & Scaling
 
 ## License
